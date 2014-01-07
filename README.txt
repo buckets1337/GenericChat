@@ -43,7 +43,7 @@ Launch an instance of the server, using the syntax provided if you screw it up.
 Launch 2 or more instances of the client, using the syntax it provides.
 
 Chat with yourself!  Or if you're lucky enough to have friends willing to demo
-and underdeveloped program, chat with them!
+an underdeveloped program, chat with them!
 
 
 So far, this has been testing using only localhost on one machine, so it is very
