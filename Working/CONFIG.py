@@ -1,8 +1,8 @@
 # CONFIG.py
 # global configuration variables and tuples
 
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 480
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 768
 
 CHAT_WINDOW_HEIGHT = 99
 CHAT_WINDOW_WIDTH = 415

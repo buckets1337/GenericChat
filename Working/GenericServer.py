@@ -2,6 +2,8 @@ from time import sleep, localtime, strftime
 from weakref import WeakKeyDictionary
 from time import time
 import sys
+import os
+from sys import stdin, exit
 
 from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
@@ -22,12 +24,13 @@ class GenericChannel(Channel):
 		
 
 	def PassOn(self, data):
-		# pass on what we received to all connected clients
+		# pass on <data> to all connected clients, with self.id now attached
 		data.update({"id": self.id})
 		self._server.SendToAll(data)
 
 	
 	def Close(self):
+		# close the channel
 		self._server.printl('')
 		self._server.printl(self)
 		self._server.printl('Player disconnected >> "' + self.user_name + '"')
@@ -38,14 +41,23 @@ class GenericChannel(Channel):
 	##################################
 
 	def Network_SetPlayerName(self, data):
+		# Get the server to assign an id to the username when connecting
 		timeStamp = strftime("%d %b %Y %H:%M:%S",localtime() )
 		self.user_name = data['user_name']
+
+		if len(self.user_name)>12:
+			display_name = self.user_name[:12]
+			display_name += "... "
+		else:
+			display_name = self.user_name
+
 		self._server.printl("Player ID:" + str(self.id) + " set as \"" + self.user_name +"\"")
 		self._server.printl('')
-		self._server.SendToAll({"action":"DisplayMessage", "message":str("(" + timeStamp + ") >> " +self.user_name + " connected.")})
+		self._server.SendToAll({"action":"DisplayMessage", "message":str("(" + timeStamp + ") >> " + display_name + " connected.")})
 		self._server.DisplayMessage(self, "Hello, " + self.user_name + "!")
 
 	def Network_Message(self, data):
+		# send a chat message to the server and all clients
 		nickname = str(data['user_name'])
 		if data['stripLabel'] == False:
 			messageString = "(" + nickname + "): " + data['message']
@@ -67,6 +79,13 @@ class GenericServer(Server):
 		self.players = WeakKeyDictionary()
 		self.name = sys.argv[2]
 
+		path = str("log/server/" + self.name + "/")
+		try:
+			os.makedirs(path)
+		except OSError:
+			if not os.path.isdir(path):
+				raise
+
 		self.printl('')
 		self.printl('----------------------')
 		self.printl('GenericServer launched')
@@ -75,6 +94,7 @@ class GenericServer(Server):
 		self.printl('')
 	
 	def Connected(self, channel, addr):
+		# runs each time a client connects
 		self.printl('')
 		self.printl(channel)
 		self.printl("New Channel connected >> " + str(addr))
@@ -84,28 +104,39 @@ class GenericServer(Server):
 
 		
 	def addPlayer(self, player):
+		# add the new client to the list of players
 		self.printl(">>New Player" + str(player.addr) + " assigned ID: " + str(player.id))
 		self.players[player] = True
 		#player.Send({"action": "initial", "lines": dict([(p.id, {"color": p.color, "lines": p.lines}) for p in self.players])})		#notifies all connected players of new player's initial state.  needs to be modified to fit my specifics
 		#self.SendPlayers()	#update the 'players' list for all connected players
 
 	def DelPlayer(self, player):
+		# remove a client from the list of players on disconnect
 		timeStamp = timeStamp = strftime("%d %b %Y %H:%M:%S",localtime() )
+
+		display_name = player.user_name
+		if len(player.user_name) > 12:
+			display_name = display_name[:12]
+			display_name += "... "
+
 		self.printl("Deleting Channel" + str(player.addr) + " >> \"" + str(player.user_name) +"\"")
-		self.SendToAll({"action":"DisplayMessage", "message":str("(" + timeStamp + ") >> " + player.user_name) + " disconnected"})
+		self.SendToAll({"action":"DisplayMessage", "message":str("(" + timeStamp + ") >> " + display_name) + " disconnected"})
 		del self.players[player]
 		#self.SendPlayers()
 
-	# def SendPlayers(self):		# sends list of players to all players	Needs to be modified for my code
-	# 	self.SendToAll({"action": "players", "players": dict([(p.id, p.user_name) for p in self.players])})		
+	def SendPlayers(self):		
+		# sends list of players to all players	Might need to be adjusted
+	 	self.SendToAll({"action": "players", "players": dict([(p.id, p.user_name) for p in self.players])})		
 
-	def SendToAll(self, data):		# sends <data> to all connected players
+	def SendToAll(self, data):		
+		# sends <data> to all connected players
 		[p.Send(data) for p in self.players]
 
 	def DisplayMessage(self, player, message):
 		player.Send({"action":"DisplayMessage", "message":str(message)})
 
-	def NextId(self):		# increments the id counter, then grabs the next client ID and returns it
+	def NextId(self):		
+		# increments the id counter, then grabs the next client ID and returns it
 		self.id += 1
 		return self.id
 
@@ -113,6 +144,7 @@ class GenericServer(Server):
 		return self.name
 
 	def printl(self, message):
+		# print to the console and the log
 		timeStamp = strftime("%d %b %Y %H:%M:%S",localtime() )
 		logName = strftime("%d_%m_%Y",localtime())
 		print str(message)
@@ -120,7 +152,8 @@ class GenericServer(Server):
 			logEntry = "<" + str(timeStamp) + ">: " + str(message)
 		else:
 			logEntry = str(message)
-		logLocation = str('log/server/' + logName + '.log')
+		logLocation = str('log/server/' + self.name + "/" + logName + '.log')
+		#need to check if the file exists before opening, and if not, need to create it first or else it throws an error on Windows
 		log = open(logLocation, 'a')
 		log.write(logEntry + "\n")
 		log.close()
