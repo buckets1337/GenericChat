@@ -24,7 +24,7 @@ def RenderChat(screen, client):		#Renders the chat window
 	#ChatWindow.blit(ChatLogScreen, (3, (CONFIG.SCREEN_HEIGHT - CONFIG.CHAT_WINDOW_HEIGHT)))
 
 	screen.blit(ChatWindow, (3, CONFIG.SCREEN_HEIGHT  - (CONFIG.CHAT_WINDOW_HEIGHT + 3)))
-	RenderChatBuffer(screen, client, (3, CONFIG.SCREEN_HEIGHT  - (CONFIG.CHAT_WINDOW_HEIGHT + 3)) )
+
 
 def spawnChatBuffer(chatBuffer):
 	#print chatBuffer
@@ -42,8 +42,32 @@ def spawnChatBuffer(chatBuffer):
 	#print "Chat log:" + str(ChatLogScreen)
 	return ChatLogScreen
 
+
+def spawnLargeChatBuffer(chatBuffer):
+	#print chatBuffer
+	
+	numBufferItems = len(chatBuffer)
+	#print numBufferItems
+	ChatLogScreen = pygame.Surface((CONFIG.CHAT_WINDOW_WIDTH, CONFIG.CHAT_WINDOW_LARGE_HEIGHT - (CONFIG.DEFAULT_FONT_SIZE) - 2))
+
+	for i in range(0, numBufferItems):
+		#print i
+		
+		lineItem = chatBuffer[-i]
+		bufferLine = chatFont.render(lineItem, 1, CONFIG.COLOR_WHITE)
+		ChatLogScreen.blit(bufferLine, (3, (CONFIG.CHAT_WINDOW_LARGE_HEIGHT - ((i * CONFIG.DEFAULT_FONT_SIZE)+ CONFIG.DEFAULT_FONT_SIZE))))
+	#print "Chat log:" + str(ChatLogScreen)
+	return ChatLogScreen
+
+
 def RenderChatBuffer(screen, client, location):
 	ChatLogScreen = spawnChatBuffer(client.chatBuffer)
+
+	screen.blit(ChatLogScreen, (location[0],location [1]))
+
+
+def RenderLargeChatBuffer(screen, client, location):
+	ChatLogScreen = spawnLargeChatBuffer(client.chatBuffer)
 
 	screen.blit(ChatLogScreen, (location[0],location [1]))
 
@@ -53,6 +77,7 @@ def RenderAll(screen, client):		# Renders everything
 
 	if client.state == "Chat":
 		RenderChat(screen, client)
+		RenderLargeChatBuffer(screen, client, (3, CONFIG.SCREEN_HEIGHT  - (CONFIG.CHAT_WINDOW_LARGE_HEIGHT + 3)) )
 
 	if client.state == "Normal":
 		RenderChatBuffer(screen, client, (3, CONFIG.SCREEN_HEIGHT  - (CONFIG.CHAT_WINDOW_HEIGHT + 3 - CONFIG.DEFAULT_FONT_SIZE)))
