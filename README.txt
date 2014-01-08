@@ -23,7 +23,8 @@ What is not working:
 
 	-There is no cursor, and it does not scroll with long messages
 
-	-Long usernames coupled with long messages probably don't display the last bit of the message
+	-Long usernames coupled with long messages probably don't display 
+	the last bit of the message
 
 
 Anyway, basic controls.
