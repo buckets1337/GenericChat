@@ -23,10 +23,7 @@ What is not working:
 
 	-There is no cursor, and it does not scroll with long messages
 
-	-Message lengths greater than 128 characters probably break
-	the program currently.
-
-	-My complete lack of documentation on this one.  Shame on me.
+	-Long usernames coupled with long messages probably don't display the last bit of the message
 
 
 Anyway, basic controls.
@@ -34,11 +31,11 @@ Anyway, basic controls.
 ` or ~ (same key) opens the chat window
 Just type messages and hit enter.
 esc closes the chat window, but does not end the session
-break (ctrl-c) to exit
+break (ctrl-c) in the console to exit
 
 
 To run the program:
-Launch an instance of the server, using the syntax provided if you screw it up.
+Launch an instance of the server, using the syntax provided if you screw it up. (start with python GenericServer.py)
 
 Launch 2 or more instances of the client, using the syntax it provides.
 
