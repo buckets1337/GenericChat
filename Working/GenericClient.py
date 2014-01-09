@@ -27,6 +27,7 @@ class GenericClient(ConnectionListener):
 		self.chatMessage = ""
 		self.messageNotFinished = None
 		self.chatBuffer = ["** Chat **"]
+		self.screenMode = "fullscreen"
 
 		self.user_name = str(sys.argv[2])
 		if (len(self.user_name)) > 32:
@@ -60,7 +61,7 @@ class GenericClient(ConnectionListener):
 		self.Pump()
 		connection.Pump()
 		#print self.state
-		ClientInput.NormalKeyInput(self)
+		ClientInput.NormalKeyInput(screen, self)
 		ClientRenderer.RenderAll(screen, self)
 
 		# if "connecting" in self.statusLabel:	#when connecting, show a sort of progress meter in the console
@@ -183,7 +184,7 @@ if len(sys.argv) != 3:
 else:
 	host, port = sys.argv[1].split(":")
 	client = GenericClient(host, int(port))
-	screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT))
+	screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT), pygame.FULLSCREEN)
 	#print client.state
 	while 1:
 		client.Loop(screen)

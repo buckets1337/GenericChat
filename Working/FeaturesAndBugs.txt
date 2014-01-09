@@ -11,5 +11,5 @@ Wanted Features and Bugs to Fix in GenericChat
 - Add ability to move cursor position with arrow keys while in chat mode
 - Make sure odd utility keys (left super, right ctrl, etc) do not print to the chat line when pressed
 - [IN PROGRESS]Better comments, everywhere
-- Test across a network, not just localhost
+- [DONE]Test across a network, not just localhost
 - [DONE]must test for the existance of log files and create them if they don't exist before trying to open them (currently, I just created the directories manually.  However, the user could delete these, so they need to be built on startup)

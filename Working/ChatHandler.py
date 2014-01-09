@@ -1,13 +1,12 @@
-#ChatHandler.py
-#Handles chat message functionality and formatting
+#Chat &ler.py
+# &les chat message functionality & formatting
 
 import pygame
 from os import environ
 
 def formatMessage(client):
 	messageList = []
-	## This next section works, but is a repetitive mess and should be rewritten to avoid repetition
-	# Splits client.chatMessage into up to 4 lines based on length, and sends them as separate messages so they show up on separate lines
+	# Splits client.chatMessage into up to 4 lines based on length, & sends them as separate messages so they show up on separate lines
 	if len(client.chatMessage) < (64 - (len(client.user_name)+4)):
 		messageList.append(client.chatMessage)
 		sendMessage(messageList, client)
@@ -49,7 +48,7 @@ def splitLines(message, messageList, hasBeenSplit, client):
 		if position < 0:
 			position = 0
 	else:
-		position = 64 + 4 #the extra 4 is for the tab, and user names cancel each other out.
+		position = 64 + 4 #the extra 4 is for the tab, & user names cancel each other out.
 
 	while notSplit == True:
 		if message[position] == " ":
@@ -78,7 +77,7 @@ def sendMessage(messageList, client):
 
 
 def keyProcessor(key_pressed, client):
-	#run when each key is pressed.  Handles adding the keypress to the message, or sending the message to be formatted and displayed if enter is pressed
+	#run when each key is pressed.   &les adding the keypress to the message, or sending the message to be formatted & displayed if enter is pressed
 	character = pygame.key.name(key_pressed)
 	if character == "`" or character == "left shift" or character == "right shift":
 		character = ""
@@ -115,15 +114,40 @@ def keyProcessor(key_pressed, client):
 			if client.isCapital == True:
 				character = shiftResolve(character)
 				#print "Shift resolved"
-			if key_pressed != pygame.K_CAPSLOCK:
-				#if len(client.chatMessage) < 64:
-				message = client.chatMessage + character
-				client.setChatMessage(message)
+			if (key_pressed != pygame.K_CAPSLOCK &
+				key_pressed != pygame.K_MENU &
+				key_pressed != pygame.K_BREAK &
+				key_pressed != pygame.K_PRINT &
+				key_pressed != pygame.K_SYSREQ &
+				key_pressed != pygame.K_DELETE &
+				key_pressed != pygame.K_LSHIFT &
+				key_pressed != pygame.K_RSHIFT &
+				key_pressed != pygame.K_LCTRL &
+				key_pressed != pygame.K_RCTRL &
+				key_pressed != pygame.K_LSUPER &
+				key_pressed != pygame.K_RSUPER &
+				key_pressed != pygame.K_LALT &
+				key_pressed != pygame.K_RALT &
+				key_pressed != pygame.K_F1 &
+				key_pressed != pygame.K_F2 &
+				key_pressed != pygame.K_F3 &
+				key_pressed != pygame.K_F4 &
+				key_pressed != pygame.K_F5 &
+				key_pressed != pygame.K_F6 &
+				key_pressed != pygame.K_F7 &
+				key_pressed != pygame.K_F8 &
+				key_pressed != pygame.K_F9 &
+				key_pressed != pygame.K_F10 &
+				key_pressed != pygame.K_F11 &
+				key_pressed != pygame.K_F12):
+					#if len(client.chatMessage) < 64:
+					message = client.chatMessage + character
+					client.setChatMessage(message)
 
 
 def shiftResolve(character):
 
-	# defines and replaces the symbols on the keyboard accessed with shift
+	# defines & replaces the symbols on the keyboard accessed with shift
 
 	if character == "/":
 		character = "?"
