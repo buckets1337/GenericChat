@@ -32,7 +32,8 @@ Anyway, basic controls.
 ` or ~ (same key) opens the chat window
 Just type messages and hit enter.
 esc closes the chat window, but does not end the session
-break (ctrl-c) in the console to exit
+break (ctrl-c) in the console or press the end key to exit
+f8 toggles fullscreen
 
 
 To run the program:
@@ -43,7 +44,4 @@ Launch 2 or more instances of the client, using the syntax it provides.
 Chat with yourself!  Or if you're lucky enough to have friends willing to demo
 an underdeveloped program, chat with them!
 
-
-So far, this has been testing using only localhost on one machine, so it is very
-possible that there are bugs that will only rear their heads when run across the
-network.  You have been warned.
+Both server and client logs are found in the "log" directory
