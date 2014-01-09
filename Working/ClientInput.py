@@ -4,12 +4,14 @@
 import pygame
 from sys import exit
 from os import environ
+from time import sleep
 
+import CONFIG
 import ChatHandler
 
 
 
-def NormalKeyInput(client):
+def NormalKeyInput(screen, client):
 
 	for event in pygame.event.get():
 
@@ -51,6 +53,23 @@ def NormalKeyInput(client):
 				if event.key == pygame.K_CAPSLOCK:
 					client.setCapsLock(False)
 					#print "CapsLock off"
+
+			if event.key == pygame.K_F8:
+				if client.screenMode == "fullscreen":
+					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT))
+					client.screenMode = "windowed"
+					break
+					# x = 0
+					# while x < 100:
+					# 	sleep(0.01)
+					# 	x += 1
+					#sleep(1)
+
+				if client.screenMode == "windowed":
+					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT), pygame.FULLSCREEN)
+					client.screenMode = "fullscreen"
+					break
+					#sleep(1)
 
 
 
