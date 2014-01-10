@@ -42,18 +42,32 @@ def formatMessage(client):
 
 def splitLines(message, messageList, hasBeenSplit, client):
 	#split the message into two lines
+
 	notSplit = True
+	originalPosition = 0
+
 	if hasBeenSplit == False:
 		position = 64 - (len(client.user_name)+4)
 		if position < 0:
 			position = 0
+		if position > 64:
+			position = 64
+		if position > len(message):
+			position = len(message)
+		originalPosition = int(position)
 	else:
 		position = 64 + 4 #the extra 4 is for the tab, & user names cancel each other out.
+		if position > len(message):
+			position = len(message)
+		if position < 0:
+			position = 0
+		originalPosition = int(position)			
+
+
 
 	while notSplit == True:
-		if message[position] == " ":
-			messageA = message[:position]
-			messageB = "    " + str(message[position:])
+
+		def appendMessages(messageA, messageB):
 			if hasBeenSplit == False:
 				messageList.append(messageA)
 				messageList.append(messageB)
@@ -62,10 +76,37 @@ def splitLines(message, messageList, hasBeenSplit, client):
 				messageList.append(messageA)
 				messageList.append(messageB)
 
+		if message[position] == " ":
+			messageA = message[:position]
+			messageB = "    " + str(message[position:])
+			appendMessages(messageA, messageB)
+
 			notSplit = False
 
 		else:
-			position -= 1
+			if position > 0:
+				position -= 1
+			elif position == 0:
+
+
+				# messageList.append(message)
+
+				# adjustedMessage = message[:originalPosition]
+				# messageList.append(adjustedMessage)
+
+				# adjustedOriginal = originalPosition - 4
+				# if adjustedOriginal < 0:
+				# 	adjustedOriginal = 0
+				# if adjustedOriginal > len(message):
+				# 	adjustedOriginal = len(message)
+				# messageA = message[:adjustedOriginal]
+				# messageB = ""    #" + str(message[adjustedOriginal:])"
+				# appendMessages(messageA, messageB)
+
+				messageA = message[:originalPosition]
+				messageB = "    " + str(message[originalPosition:])
+				appendMessages(messageA, messageB)
+
 	return messageList
 
 

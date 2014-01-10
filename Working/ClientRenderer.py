@@ -11,9 +11,11 @@ chatFont = pygame.font.Font(None, CONFIG.DEFAULT_FONT_SIZE)
 ChatWindow = pygame.Surface((CONFIG.CHAT_WINDOW_WIDTH, CONFIG.CHAT_WINDOW_HEIGHT))
 
 
-def RenderChat(screen, client):		#Renders the chat window
+def RenderChat(screen, client):		#Renders the chat input window
 
 	currentMessageBuffer = client.chatMessage
+	if len(currentMessageBuffer) > 66:
+		currentMessageBuffer = currentMessageBuffer[-66:]
 	chatLine = chatFont.render(">> " + str(currentMessageBuffer), 1, CONFIG.COLOR_WHITE)
 
 	#print client.chatBuffer
@@ -44,7 +46,7 @@ def spawnChatBuffer(chatBuffer):
 
 
 def spawnLargeChatBuffer(chatBuffer):
-	#print chatBuffer
+	#print extended chatBuffer
 	
 	numBufferItems = len(chatBuffer)
 	#print numBufferItems
@@ -61,15 +63,21 @@ def spawnLargeChatBuffer(chatBuffer):
 
 
 def RenderChatBuffer(screen, client, location):
+	# renders a log of all messages above the chat input window
 	ChatLogScreen = spawnChatBuffer(client.chatBuffer)
 
 	screen.blit(ChatLogScreen, (location[0],location [1]))
 
 
 def RenderLargeChatBuffer(screen, client, location):
+	# renders an extended log of all messages above the chat input window
 	ChatLogScreen = spawnLargeChatBuffer(client.chatBuffer)
 
 	screen.blit(ChatLogScreen, (location[0],location [1]))
+
+
+
+
 
 
 def RenderAll(screen, client):		# Renders everything
