@@ -16,23 +16,25 @@ def formatMessage(client):
 		sendMessage(messageList, client)
 		
 
-	elif len(client.chatMessage) < 192:
+	elif len(client.chatMessage) < (192 - (len(client.user_name) + 4)):
 		splitLines(client.chatMessage, messageList, False, client)
 		splitLines(messageList[1], messageList, True, client)
 		sendMessage(messageList, client)
 
-	elif len(client.chatMessage) < 256:
+	elif len(client.chatMessage) < (256 - (len(client.user_name) + 4)):
 		splitLines(client.chatMessage, messageList, False, client)
 		splitLines(messageList[1], messageList, True, client)
 		splitLines(messageList[2], messageList, True, client)
 		sendMessage(messageList, client)
+
 					
 	else:
-		client.chatMessage = client.chatMessage[:255]	#cut the message off at 256 characters
+		client.chatMessage = client.chatMessage[:256]	#cut the message off at 256 characters
 
 		splitLines(client.chatMessage, messageList, False, client)
 		splitLines(messageList[1], messageList, True, client)
 		splitLines(messageList[2], messageList, True, client)
+		splitLines(messageList[3], messageList, True, client)
 		sendMessage(messageList, client)
 		
 	#prepare to accept the next message from the user
@@ -54,6 +56,7 @@ def splitLines(message, messageList, hasBeenSplit, client):
 			position = 64
 		if position > len(message):
 			position = len(message)
+
 		originalPosition = int(position)
 	else:
 		position = 64 + 4 #the extra 4 is for the tab, & user names cancel each other out.
@@ -61,6 +64,7 @@ def splitLines(message, messageList, hasBeenSplit, client):
 			position = len(message)
 		if position < 0:
 			position = 0
+
 		originalPosition = int(position)			
 
 
@@ -87,21 +91,7 @@ def splitLines(message, messageList, hasBeenSplit, client):
 			if position > 0:
 				position -= 1
 			elif position == 0:
-
-
-				# messageList.append(message)
-
-				# adjustedMessage = message[:originalPosition]
-				# messageList.append(adjustedMessage)
-
-				# adjustedOriginal = originalPosition - 4
-				# if adjustedOriginal < 0:
-				# 	adjustedOriginal = 0
-				# if adjustedOriginal > len(message):
-				# 	adjustedOriginal = len(message)
-				# messageA = message[:adjustedOriginal]
-				# messageB = ""    #" + str(message[adjustedOriginal:])"
-				# appendMessages(messageA, messageB)
+				pass
 
 				messageA = message[:originalPosition]
 				messageB = "    " + str(message[originalPosition:])
@@ -118,36 +108,101 @@ def sendMessage(messageList, client):
 
 
 def keyProcessor(key_pressed, client):
-	#run when each key is pressed.   &les adding the keypress to the message, or sending the message to be formatted & displayed if enter is pressed
+	#run when each key is pressed.   handles adding the keypress to the message, or sending the message to be formatted & displayed if enter is pressed
 	character = pygame.key.name(key_pressed)
-	if character == "`" or character == "left shift" or character == "right shift":
-		character = ""
+
+	client.chatMessage = client.chatMessage[:(client.chatCursorLocation)] + client.chatMessage[(client.chatCursorLocation + 1):]
+
+	if (character == "`" or 
+		character == "escape" or
+		character == "left shift" or 
+		character == "right shift" or
+		character == "left ctrl" or
+		character == "right ctrl" or
+		character == "left alt" or
+		character == "right alt" or
+		character == "caps lock"):
+	 		character = ""
 
 	if client.CapsLock == True:
 		character = character.upper()
 
-
 	if key_pressed == pygame.K_LSHIFT or key_pressed == pygame.K_RSHIFT:		
 		client.setIsCapital(True)
-		#print "Shift on"
 
 	if character == "caps lock" or character == "CAPS LOCK":
 		client.setCapsLock(True)
+		message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[client.chatCursorLocation:]
+		client.setChatMessage(message)
 		#print "CapsLock on"
 
 	if key_pressed == pygame.K_RETURN:
 		client.setMessageNotFinished(False)
+		client.chatCharacterCounter = 0
+		client.chatCursorLocation = 0
+		client.overbuffer = False
 		
 
 	elif key_pressed == pygame.K_SPACE:
 		#if len(client.chatMessage) < 64:
-		message = client.chatMessage + " "
+		message = client.chatMessage[:client.chatCursorLocation] + " |" + client.chatMessage[client.chatCursorLocation:]
+
 		client.setChatMessage(message)
+		client.chatCharacterCounter += 1
+		client.chatCursorLocation += 1
+		client.overbuffer = False
+		print client.chatCursorLocation
 
 	elif key_pressed == pygame.K_BACKSPACE:
 		if client.chatMessage != "":
-			message = client.chatMessage[:-1]
+			message = client.chatMessage[:(client.chatCursorLocation - 1)] + "|" + client.chatMessage[client.chatCursorLocation:]
 			client.setChatMessage(message)
+			client.chatCharacterCounter -= 1
+			client.chatCursorLocation -= 1
+			client.overbuffer = False
+			print client.chatCursorLocation
+
+	elif key_pressed == pygame.K_LEFT:
+		client.chatCursorLocation -= 1
+		if client.chatCursorLocation < 0:
+			client.chatCursorLocation = 0
+		message = client.chatMessage[:client.chatCursorLocation] + "|" + client.chatMessage[client.chatCursorLocation:]
+		client.setChatMessage(message)
+		print client.chatCursorLocation
+
+	elif key_pressed == pygame.K_RIGHT:
+		client.chatCursorLocation += 1
+		if client.chatCursorLocation > len(client.chatMessage):
+			client.chatCursorLocation = len(client.chatMessage)
+		message = client.chatMessage[:client.chatCursorLocation] + "|" + client.chatMessage[client.chatCursorLocation:]
+		client.setChatMessage(message)
+		print client.chatCursorLocation
+
+	elif key_pressed == pygame.K_UP:
+		if client.chatHistoryCounter > 0:
+			client.chatHistoryCounter -=1
+			print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+			if client.chatHistoryCounter < 0:
+				client.chatHistoryCounter = 0
+			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter] + "|" 
+		else:
+			client.chatMessage = client.chatMessage + "|"
+		client.chatCursorLocation = len(client.chatMessage) - 1
+			
+
+	elif key_pressed == pygame.K_DOWN:
+		if client.chatHistoryCounter < len(client.chatHistoryList):
+			
+			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter]
+			if client.chatHistoryCounter < len(client.chatHistoryList) - 1:
+				client.chatHistoryCounter += 1
+			print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+			if client.chatHistoryCounter > 31:
+				client.chatHistoryCounter = 31
+			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter] + "|"
+		else:
+			client.chatMessage = client.chatMessage + "|"
+		client.chatCursorLocation = len(client.chatMessage) - 1
 
 	else:
 		if character != "":
@@ -168,8 +223,12 @@ def keyProcessor(key_pressed, client):
 				character != "f10" and
 				character != "f11" and
 				character != "f12" and
+				character != "`" and
+				character != "escape" and
 				character != "left alt" and
 				character != "right alt" and
+				character != "left shift" and
+				character != "right shift" and
 				character != "left ctrl" and
 				character != "right ctrl" and
 				character != "left super" and
@@ -206,9 +265,26 @@ def keyProcessor(key_pressed, client):
 				character != "[8]" and
 				character != "[9]"			
 				):
-					#if len(client.chatMessage) < 64:
-					message = client.chatMessage + character
+
+					messageWordList = client.chatMessage.split(" ")
+					if len(messageWordList[-1]) >= 32:
+						client.overbuffer = True
+
+					if ((client.chatCharacterCounter >= 32 and " " not in client.chatMessage) or 
+						(len(client.chatMessage) > 256) or 
+						(client.overbuffer == True)):
+							message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[(client.chatCursorLocation):]
+							print client.chatCursorLocation
+					else:
+						message = client.chatMessage[:(client.chatCursorLocation)] + character + "|" + client.chatMessage[(client.chatCursorLocation):]
+						client.chatCharacterCounter += 1
+						client.chatCursorLocation += 1
+						print client.chatCursorLocation
+			
 					client.setChatMessage(message)
+		if character == "":
+			message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[(client.chatCursorLocation):]
+			client.setChatMessage(message)
 
 
 def shiftResolve(character):

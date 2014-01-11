@@ -1,15 +1,40 @@
 Wanted Features and Bugs to Fix in GenericChat
 
+
+
+
+- Add a timer to cycle and flash the cursor (maybe? not sure I need this)
+
+- Add a buffer to the end of the chat history that saves what was entered before beginning to scroll through the history (would have to be saved on K_UP or K_DOWN, but deleted as soon as a message is sent with K_RETURN so as to avoid disturbing the order of the chatHistoryList)
+
+- Add in a password system.  This will require encryption before sending to the server, checking the hash of the password against a database (or text file!) of hashes from all passwords, once the server receives the password attempt.  The hash is checked against the saved hash that the new connection is claiming as the username. If there is a failure, that ip address is logged and a counter (which should be configurable) is started that, when it is maxed by failed attempts, adds the ip to a blacklist for a number of days (also configurable).  A configurable white list and black list should both exist for the server. Or maybe there is a library already that will do all this for me.  If so, add it in!
+
+- Create hooks in the parsing of chat text to allow console commands (commands that use chat and begin with "/", that when detected run a function on the non-command segment of string, or use that segment as arguments in a command.  Think quake console, /who, etc.)
+
+- Add data structures and rendering routines and controls to support multiple chat channels.  They should be switchable with keypresses while in chat mode, and should all work the same, but display a different chat channel with different users.  This is in preparation of a global/local chat channel setup.  I should be able to create and selectively populate new chat channels at will, so that channels can be created and populated based on where a player is located, or other factors such as guilds or nations, etc.
+
+- Add some GUI display representing a list of all users in a channel
+
+
+
+
+- [IN PROGRESS]Better comments, everywhere
+
+
+
+
+- [DONE]Fix issue with chat history where sending a message doesn't return you to the top of the history queue, causing issues with maintaining the order of events in the history list
+- [DONE]Add a history of previous messages accessible via the up and down arrow keys
+- [DONE]Very long messages may currently not display the last little bit if the player has a long user name
+- [DONE]Add a cursor to the client
+- [DONE]Make display for input text in client scroll with the cursor as the line extends past the 64 character limit of the box
+- [DONE]Add ability to move cursor position with arrow keys while in chat mode
+- [DONE] Make sure odd utility keys (left super, right ctrl, etc) do not print to the chat line when pressed
+
+- [DONE]Test across a network, not just localhost
+- [DONE]must test for the existance of log files and create them if they don't exist before trying to open them (currently, I just created the directories manually.  However, the user could delete these, so they need to be built on startup)
 - [DONE]Test chat lengths
 - [DONE]Break out message formatting from keyboard input
 - [DONE]Correctly format up 256 characters of text by breaking into lines
 - [DONE]Handle display of very long user names
 - [DONE]limit the length of usernames (now set to 32 characters)
-- Very long messages may currently not display the last little bit if the player has a long user name
-- Add a cursor to the client
-- Make display for input text in client scroll with the cursor as the line extends past the 64 character limit of the box
-- Add ability to move cursor position with arrow keys while in chat mode
-- Make sure odd utility keys (left super, right ctrl, etc) do not print to the chat line when pressed
-- [IN PROGRESS]Better comments, everywhere
-- [DONE]Test across a network, not just localhost
-- [DONE]must test for the existance of log files and create them if they don't exist before trying to open them (currently, I just created the directories manually.  However, the user could delete these, so they need to be built on startup)

@@ -24,8 +24,13 @@ class GenericClient(ConnectionListener):
 		self.state = "Normal"
 		self.CapsLock = False
 		self.isCapital = False
-		self.chatMessage = ""
+		self.chatMessage = "|"
+		self.chatCursorLocation = 0
 		self.messageNotFinished = None
+		self.overbuffer = False
+		self.chatCharacterCounter = 0
+		self.chatHistoryList = []
+		self.chatHistoryCounter = 0
 		self.chatBuffer = ["** Chat **"]
 		self.screenMode = "fullscreen"
 

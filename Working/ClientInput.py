@@ -20,11 +20,17 @@ def NormalKeyInput(screen, client):
 			if event.key == pygame.K_END or event.type == pygame.QUIT:
 			 	exit()
 
+			if event.key == pygame.K_PRINT:
+			 	# capture the screen and save it under the date and time in the "screenshots" folder
+			 	pass
+
 			if client.state == "Normal":
 				if event.key == pygame.K_BACKQUOTE:
 					client.setState("Chat")
 					client.setChatMessage("")
 					client.setMessageNotFinished(True)
+					client.chatCharacterCounter = 0
+					client.chatCursorLocation = 0
 					print ""
 					print ">> chatting..."
 
@@ -40,7 +46,16 @@ def NormalKeyInput(screen, client):
 
 				if client.messageNotFinished == False:
 					# have hit enter, format and send the message
+					client.chatHistoryList.append(client.chatMessage)
+					print client.chatHistoryList
+					if len(client.chatHistoryList) > 32:
+						client.chatHistoryList.pop(0)
+					client.chatHistoryCounter = len(client.chatHistoryList) #- 1
+					print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+					if client.chatHistoryCounter > 31:
+						client.chatHistoryCounter = 31
 					ChatHandler.formatMessage(client)
+					client.chatMessage = '|'
 					
 		if event.type == pygame.KEYUP:
 
@@ -70,6 +85,7 @@ def NormalKeyInput(screen, client):
 					client.screenMode = "fullscreen"
 					break
 					#sleep(1)
+
 
 
 
