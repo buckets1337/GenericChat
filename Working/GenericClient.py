@@ -18,6 +18,7 @@ class GenericClient(ConnectionListener):
 
 	def __init__(self, host, port):
 		#Client.__init__("pygame")
+		self.screen = ""
 		self.server_name = None
 		#self.statusLabel = ""
 		self.id = None
@@ -40,12 +41,13 @@ class GenericClient(ConnectionListener):
 		if (len(self.user_name)) > 32:
 			self.user_name = self.user_name[:32]
 
-		path = str("log/client/" + self.user_name + "/")
-		try:
-			os.makedirs(path)
-		except OSError:
-			if not os.path.isdir(path):
-				raise
+		pathList = ( str("log/client/" + self.user_name + "/"), str("screenshots/" + self.user_name + "/") )
+		for path in pathList:
+			try:
+				os.makedirs(path)
+			except OSError:
+				if not os.path.isdir(path):
+					raise
 
 		self.printl("")
 		self.printl("----------------------")
@@ -75,14 +77,15 @@ class GenericClient(ConnectionListener):
 		connection.Pump()
 		#print self.state
 		if self.passwordVerify == True:
-			if screen == "":
+			if self.screen == "":
 				if CONFIG.SCREEN_MODE == "fullscreen":
-					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT), pygame.FULLSCREEN)
+					self.screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT), pygame.FULLSCREEN)
 				elif CONFIG.SCREEN_MODE == "windowed":
-					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT))
+					self.screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT))
 		if self.passwordVerify == True:
-			ClientInput.NormalKeyInput(screen, self)
-			ClientRenderer.RenderAll(screen, self)
+			if self.screen != "":
+				ClientInput.NormalKeyInput(screen, self)
+				ClientRenderer.RenderAll(screen, self)
 
 		# if "connecting" in self.statusLabel:	#when connecting, show a sort of progress meter in the console
 		# 	self.statusLabel = "connecting" + ("." * ((self.frame / 30) % 4))

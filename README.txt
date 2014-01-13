@@ -25,9 +25,12 @@ Anyway, basic controls.
 
 ` or ~ (same key) opens the chat window
 Just type messages and hit enter.
+arrow key left or right moves the cursor
+arrow key up or down scrolls through chat history
 esc closes the chat window, but does not end the session
-break (ctrl-c) in the console or press the end key to exit
+break (ctrl-c) in the console or press the end key in game to exit
 f8 toggles fullscreen
+prtscn to take a screenshot
 
 
 To run the program:

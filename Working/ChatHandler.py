@@ -111,28 +111,38 @@ def keyProcessor(key_pressed, client):
 
 	client.chatMessage = client.chatMessage[:(client.chatCursorLocation)] + client.chatMessage[(client.chatCursorLocation + 1):]
 
-	if (character == "`" or 
-		character == "escape" or
-		character == "left shift" or 
-		character == "right shift" or
-		character == "left ctrl" or
-		character == "right ctrl" or
-		character == "left alt" or
-		character == "right alt" or
-		character == "caps lock"):
-	 		character = ""
+	#print client.chatCursorLocation
 
 	if client.CapsLock == True:
 		character = character.upper()
 
-	if key_pressed == pygame.K_LSHIFT or key_pressed == pygame.K_RSHIFT:		
+	if key_pressed == pygame.K_LSHIFT or key_pressed == pygame.K_RSHIFT or character == "left shift" or character == "right shift" or character == "LEFT SHIFT" or character == "RIGHT SHIFT":		
 		client.setIsCapital(True)
+		#print client.isCapital
 
 	if character == "caps lock" or character == "CAPS LOCK":
+
+		if client.CapsLock == True:
+			message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[client.chatCursorLocation:]
+		else:
+			message = client.chatMessage
 		client.setCapsLock(True)
-		message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[client.chatCursorLocation:]
 		client.setChatMessage(message)
 		#print "CapsLock on"
+
+	if (character == "`" or 
+		character == "escape" or
+		character == "left shift" or 
+		character == "right shift" or
+		character == "LEFT SHIFT" or
+		character == "RIGHT SHIFT" or
+		character == "left ctrl" or
+		character == "right ctrl" or
+		character == "left alt" or
+		character == "right alt" or
+		character == "caps lock" or
+		character == "CAPS LOCK"):
+	 		character = ""
 
 	if key_pressed == pygame.K_RETURN:
 		client.setMessageNotFinished(False)
@@ -204,7 +214,8 @@ def keyProcessor(key_pressed, client):
 
 	else:
 		if character != "":
-			#print isCapital
+			#print client.isCapital
+			#print character
 			if client.isCapital == True:
 				character = shiftResolve(character)
 				#print "Shift resolved"
@@ -280,6 +291,10 @@ def keyProcessor(key_pressed, client):
 						#print client.chatCursorLocation
 			
 					client.setChatMessage(message)
+			else:
+				message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[(client.chatCursorLocation):]
+				client.setChatMessage(message)
+
 		if character == "":
 			message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[(client.chatCursorLocation):]
 			client.setChatMessage(message)
@@ -288,6 +303,8 @@ def keyProcessor(key_pressed, client):
 def shiftResolve(character):
 
 	# defines & replaces the symbols on the keyboard accessed with shift
+
+	#print character
 
 	if character == "/":
 		character = "?"
@@ -332,5 +349,6 @@ def shiftResolve(character):
 	else:
 		character = character.upper()
 	
+	#print "shiftResolve"
 	return character
 	

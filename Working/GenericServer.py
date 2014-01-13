@@ -18,6 +18,14 @@ import GetPassword
 passwordCryptContext = CryptContext(schemes=["pbkdf2_sha512", "sha512_crypt"], default="sha512_crypt")
 
 
+
+
+
+
+
+
+
+
 class GenericChannel(Channel):
 	"""
 	This is the server representation of a single connected client.
@@ -113,7 +121,12 @@ class GenericChannel(Channel):
 				if self.num_attempts < 5:
 					self.num_attempts += 1
 					self._server.DisplayConsoleMessage(self, "Incorrect Password.")
-					self._server.printl(str(5 - self.num_attempts) + " attempts remaining. (" + self.user_name + ")")
+					attemptsString = "..." + str(5 - self.num_attempts) + " attempts remaining. (" + self.user_name + ")"
+					if attemptsString == ("...1 attempts remaining. (" + self.user_name + ")"):
+						attemptsString = "...1 attempt remaining. (" + self.user_name + ")"
+					if attemptsString == ("...0 attempts remaining. (" + self.user_name + ")"):
+						attemptsString = "...Last attempt. (" + self.user_name + ")"
+					self._server.printl(attemptsString)
 					self._server.GetPassword(self)
 				else:
 					self._server.DisplayConsoleMessage(self, "Too many failed attempts, disconnecting.")
@@ -243,6 +256,34 @@ class GenericServer(Server):
 		passwordHashFile.close()
 
 
+	def checkHashedPassword(self, username, password):
+		
+		#print " " + password + " "
+		# check the hashed password against the entry for the username.  If they are the same, move on
+		passwordCorrect = passwordCryptContext.verify(password, self.passwordHash[username])
+
+		return passwordCorrect
+
+
+	def CheckUsernameExists(self, username):
+		# check if a hashed username is in self.passwordHash
+		#print "UN" + username
+		if username in self.passwordHash:
+			return True
+		else:
+			return False
+
+
+	def GetUserPassword(self, player):
+		# gets a password over the network from the user for registration
+		player.Send({"action":"GetUserPassword"})
+
+
+	def GetPassword(self, player):
+		# gets another password attempt from the user
+		player.Send({"action":"GetPassword"})
+
+
 	def addPlayer(self, player):
 		# add the new client to the list of players
 		self.printl(">>New Player" + str(player.addr) + " assigned ID: " + str(player.id))
@@ -293,44 +334,6 @@ class GenericServer(Server):
 		player.Send({"action":"ConsoleMessage", "message":str(message)})
 
 
-	def NextId(self):		
-		# increments the id counter, then grabs the next client ID and returns it
-		self.id += 1
-		return self.id
-
-
-	def checkHashedPassword(self, username, password):
-		
-		#print " " + password + " "
-		# check the hashed password against the entry for the username.  If they are the same, move on
-		passwordCorrect = passwordCryptContext.verify(password, self.passwordHash[username])
-
-		return passwordCorrect
-
-
-	def CheckUsernameExists(self, username):
-		# check if a hashed username is in self.passwordHash
-		#print "UN" + username
-		if username in self.passwordHash:
-			return True
-		else:
-			return False
-
-
-	def GetUserPassword(self, player):
-		# gets a password over the network from the user for registration
-		player.Send({"action":"GetUserPassword"})
-
-
-	def GetPassword(self, player):
-		# gets another password attempt from the user
-		player.Send({"action":"GetPassword"})
-
-
-	def GetName(self):
-		return self.name
-
-
 	def printl(self, message):
 		# print to the console and the log
 		timeStamp = strftime("%d %b %Y %H:%M:%S",localtime() )
@@ -345,6 +348,18 @@ class GenericServer(Server):
 		log = open(logLocation, 'a')
 		log.write(logEntry + "\n")
 		log.close()
+
+
+	def NextId(self):		
+		# increments the id counter, then grabs the next client ID and returns it
+		self.id += 1
+		return self.id
+
+
+	def GetName(self):
+		return self.name
+
+
 
 	
 
