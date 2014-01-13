@@ -20,9 +20,11 @@ def NormalKeyInput(screen, client):
 			if event.key == pygame.K_END or event.type == pygame.QUIT:
 			 	exit()
 
+
 			if event.key == pygame.K_PRINT:
 			 	# capture the screen and save it under the date and time in the "screenshots" folder
 			 	pass
+
 
 			if client.state == "Normal":
 				if event.key == pygame.K_BACKQUOTE:
@@ -33,6 +35,7 @@ def NormalKeyInput(screen, client):
 					client.chatCursorLocation = 0
 					print ""
 					print ">> chatting..."
+
 
 			if client.state == "Chat":
 
@@ -47,16 +50,18 @@ def NormalKeyInput(screen, client):
 				if client.messageNotFinished == False:
 					# have hit enter, format and send the message
 					client.chatHistoryList.append(client.chatMessage)
-					print client.chatHistoryList
+					#print client.chatHistoryList
 					if len(client.chatHistoryList) > 32:
 						client.chatHistoryList.pop(0)
 					client.chatHistoryCounter = len(client.chatHistoryList) #- 1
-					print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+					#print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
 					if client.chatHistoryCounter > 31:
 						client.chatHistoryCounter = 31
 					ChatHandler.formatMessage(client)
 					client.chatMessage = '|'
 					
+
+
 		if event.type == pygame.KEYUP:
 
 			if client.state == "Chat":
@@ -65,11 +70,13 @@ def NormalKeyInput(screen, client):
 					client.setIsCapital(False)
 					#print "Shift off"
 
+
 				if event.key == pygame.K_CAPSLOCK:
 					client.setCapsLock(False)
 					#print "CapsLock off"
 
 			if event.key == pygame.K_F8:
+				
 				if client.screenMode == "fullscreen":
 					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT))
 					client.screenMode = "windowed"
@@ -79,6 +86,7 @@ def NormalKeyInput(screen, client):
 					# 	sleep(0.01)
 					# 	x += 1
 					#sleep(1)
+
 
 				if client.screenMode == "windowed":
 					screen = pygame.display.set_mode((CONFIG.SCREEN_WIDTH, CONFIG.SCREEN_HEIGHT), pygame.FULLSCREEN)

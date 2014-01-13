@@ -3,11 +3,15 @@ Wanted Features and Bugs to Fix in GenericChat
 
 
 
+- Add a message on client disconnect for the server logs
+
+- Adjust server's successful password response to reflect which user it is referring to.
+
 - Add a timer to cycle and flash the cursor (maybe? not sure I need this)
 
 - Add a buffer to the end of the chat history that saves what was entered before beginning to scroll through the history (would have to be saved on K_UP or K_DOWN, but deleted as soon as a message is sent with K_RETURN so as to avoid disturbing the order of the chatHistoryList)
 
-- Add in a password system.  This will require encryption before sending to the server, checking the hash of the password against a database (or text file!) of hashes from all passwords, once the server receives the password attempt.  The hash is checked against the saved hash that the new connection is claiming as the username. If there is a failure, that ip address is logged and a counter (which should be configurable) is started that, when it is maxed by failed attempts, adds the ip to a blacklist for a number of days (also configurable).  A configurable white list and black list should both exist for the server. Or maybe there is a library already that will do all this for me.  If so, add it in!
+- Add method to hash the code at client runtime and compare with a hash saved to the server of what the code should be.  If the hashes disagree(code has been altered), kick the client
 
 - Create hooks in the parsing of chat text to allow console commands (commands that use chat and begin with "/", that when detected run a function on the non-command segment of string, or use that segment as arguments in a command.  Think quake console, /who, etc.)
 
@@ -15,6 +19,7 @@ Wanted Features and Bugs to Fix in GenericChat
 
 - Add some GUI display representing a list of all users in a channel
 
+- Add ability to save a screenshot with PrtScn
 
 
 
@@ -22,6 +27,9 @@ Wanted Features and Bugs to Fix in GenericChat
 
 
 
+- [DONE]Fix pickle of password information so that it saves and loads correctly between server sessions (didn't pickle, just saved as text with the password hashed)
+- [DONE]Remove debug comments from console output for client
+- [DONE]Add in a password system.  This will require encryption before sending to the server, checking the hash of the password against a database (or text file!) of hashes from all passwords, once the server receives the password attempt.  The hash is checked against the saved hash that the new connection is claiming as the username. If there is a failure, that ip address is logged and a counter (which should be configurable) is started that, when it is maxed by failed attempts, adds the ip to a blacklist for a number of days (also configurable).  A configurable white list and black list should both exist for the server. Or maybe there is a library already that will do all this for me.  If so, add it in!
 
 - [DONE]Fix issue with chat history where sending a message doesn't return you to the top of the history queue, causing issues with maintaining the order of events in the history list
 - [DONE]Add a history of previous messages accessible via the up and down arrow keys

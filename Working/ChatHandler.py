@@ -67,8 +67,6 @@ def splitLines(message, messageList, hasBeenSplit, client):
 
 		originalPosition = int(position)			
 
-
-
 	while notSplit == True:
 
 		def appendMessages(messageA, messageB):
@@ -151,7 +149,7 @@ def keyProcessor(key_pressed, client):
 		client.chatCharacterCounter += 1
 		client.chatCursorLocation += 1
 		client.overbuffer = False
-		print client.chatCursorLocation
+		#print client.chatCursorLocation
 
 	elif key_pressed == pygame.K_BACKSPACE:
 		if client.chatMessage != "":
@@ -160,7 +158,7 @@ def keyProcessor(key_pressed, client):
 			client.chatCharacterCounter -= 1
 			client.chatCursorLocation -= 1
 			client.overbuffer = False
-			print client.chatCursorLocation
+			#print client.chatCursorLocation
 
 	elif key_pressed == pygame.K_LEFT:
 		client.chatCursorLocation -= 1
@@ -168,7 +166,7 @@ def keyProcessor(key_pressed, client):
 			client.chatCursorLocation = 0
 		message = client.chatMessage[:client.chatCursorLocation] + "|" + client.chatMessage[client.chatCursorLocation:]
 		client.setChatMessage(message)
-		print client.chatCursorLocation
+		#print client.chatCursorLocation
 
 	elif key_pressed == pygame.K_RIGHT:
 		client.chatCursorLocation += 1
@@ -176,12 +174,12 @@ def keyProcessor(key_pressed, client):
 			client.chatCursorLocation = len(client.chatMessage)
 		message = client.chatMessage[:client.chatCursorLocation] + "|" + client.chatMessage[client.chatCursorLocation:]
 		client.setChatMessage(message)
-		print client.chatCursorLocation
+		#print client.chatCursorLocation
 
 	elif key_pressed == pygame.K_UP:
 		if client.chatHistoryCounter > 0:
 			client.chatHistoryCounter -=1
-			print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+			#print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
 			if client.chatHistoryCounter < 0:
 				client.chatHistoryCounter = 0
 			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter] + "|" 
@@ -196,7 +194,7 @@ def keyProcessor(key_pressed, client):
 			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter]
 			if client.chatHistoryCounter < len(client.chatHistoryList) - 1:
 				client.chatHistoryCounter += 1
-			print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
+			#print "History:" + str(client.chatHistoryCounter) + "History List:" + str(len(client.chatHistoryList))
 			if client.chatHistoryCounter > 31:
 				client.chatHistoryCounter = 31
 			client.chatMessage = client.chatHistoryList[client.chatHistoryCounter] + "|"
@@ -274,12 +272,12 @@ def keyProcessor(key_pressed, client):
 						(len(client.chatMessage) > 256) or 
 						(client.overbuffer == True)):
 							message = client.chatMessage[:(client.chatCursorLocation)] + "|" + client.chatMessage[(client.chatCursorLocation):]
-							print client.chatCursorLocation
+							#print client.chatCursorLocation
 					else:
 						message = client.chatMessage[:(client.chatCursorLocation)] + character + "|" + client.chatMessage[(client.chatCursorLocation):]
 						client.chatCharacterCounter += 1
 						client.chatCursorLocation += 1
-						print client.chatCursorLocation
+						#print client.chatCursorLocation
 			
 					client.setChatMessage(message)
 		if character == "":

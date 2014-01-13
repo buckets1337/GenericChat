@@ -1,6 +1,8 @@
 This is an attempt to wrap my head around networking using Python
 and the PodSixNet library.  
 
+Requires Python 2.7, pygame, and passlib
+
 What is working:
 	-A generic chat program that works over a network. There
 	are both client and server scripts, and any number of clients
@@ -11,20 +13,12 @@ What is working:
 	breaks the log...and it appears to do so for the rest of the
 	calendar day
 
-	-Input is displayed while typing, however, it does not scroll
-	with long messages
-
 	-Output is visible in both the console and the GUI
 
 What is not working:
 	-I seem to have misplaced the work I did on giving everyone
 	an avatar and means to control it.  Re-implementing this
 	will probably be next
-
-	-There is no cursor, and it does not scroll with long messages
-
-	-Long usernames coupled with long messages probably don't display 
-	the last bit of the message
 
 
 Anyway, basic controls.
@@ -45,3 +39,6 @@ Chat with yourself!  Or if you're lucky enough to have friends willing to demo
 an underdeveloped program, chat with them!
 
 Both server and client logs are found in the "log" directory
+
+the passwordHash file in the serverData directory contains all the passwords.  If you're getting immediate disconnects by clients on connection, try deleting this file.
+Everyone will have to re-enter their passwords the next time they log in, but it should help clear up issues related to corrupted hashes in this file.
