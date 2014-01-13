@@ -1,3 +1,11 @@
+####################
+## Generated Files
+####################
+log/
+serverData/
+screenshots/
+
+
 #################
 ## Eclipse
 #################
